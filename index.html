@@ -3,12 +3,80 @@
 <head>
 
   <title>Transaction Mapper</title>
+  
+  <!-- jQuery -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <!-- html2canvas -->
+  <script type="text/javascript" src="html2canvas.js"></script>
+  <script type="text/javascript" src="canvas2image.js"></script>
+
+  <!-- Vis DOT mapper -->
+  <script type="text/javascript" src="vis.js"></script>
+  <link href="vis.css" rel="stylesheet" type="text/css" />
+  
+  <!-- jQuery Print Element -->
+  <script type="text/javascript" src="jquery.printElement.js"></script>
+ <script type="text/javascript" src="jquery.browser.js"></script>
+  
+  <!-- My CSS -->
+    <link href="my.css" rel="stylesheet" type="text/css" />
 
   <script>
 
+    // Resize the map when window resizes
+    window.onresize = function () {
+      network.redraw()
+    };
+
+    // Draw the map
+    function draw () {
+      try {
+
+        // TEST DATA FOR NOW!
+        data = {
+          dot: "digraph {\
+            node [shape=circle fontSize=16]\
+            edge [length=100, color=gray, fontColor=black]\
+            A -> B;\
+            B -> C;\
+            C -> A;\
+          }"
+        };
+
+        // create a network
+        var container = $("#map")[0];
+        var options = {};
+        network = new vis.Network(container, data, options);
+        network.redraw();
+      }
+      catch (err) {
+        console.log(err.toString());
+      }
+    }
+
     $(function() {
-// START UP HERE
+
+      $("#download_button").click(function() {
+        html2canvas($("#map_area"), {
+          onrendered: function(canvas) {
+            Canvas2Image.saveAsPNG(canvas); 
+          }
+        });
+      });
+
+      $("#print_button").click(function() {
+
+HERE HERE HERE
+  Try setting a global variable "printing" then using toDataURL (http://goo.gl/Zon9Y) to flip the canvas to an image, then call printElement, then register something like document.focus (?) to indicate when the print pop-up is closed and flip back to canvas and redraw
+HERE HERE HERE      
+      
+        $("#map_area").printElement();
+      });
+
+      // Initial drawing -- TEST FOR NOW
+      draw();
+
     });
 
   </script>
@@ -17,31 +85,28 @@
 
 <body>
 
-<h2>Transaction Mapper</h2>
-All changes saved automatically (no access controls, no versioning).<br/>
-Send questions to <a href="mailto:david.durant@digital.cabinet-office.gov.uk">David Durant</a>.
-<hr/>
+  <h2>Transaction Mapper</h2>
+  All changes saved automatically (no access controls, no versioning). 
+  Send questions to <a href="mailto:david.durant@digital.cabinet-office.gov.uk">David Durant</a>.<br/>
+  Thanks to the folks behind <a href="http://visjs.org/">vis.js</a>, <a href="http://html2canvas.hertzen.com/">html2canvas</a>, <a href="http://www.nihilogic.dk/labs/canvas2image/">canvase2image</a> and <a href="http://projects.erikzaadi.com/jQueryPlugins/jQuery.printElement/">jQuery Print Element</a>.
+  
+  <hr/>
 
-Transaction CRUD / Steps CRUD / Actions CRUD<br/>
-<a href="http://goo.gl/AvCcj">Scrollable table (not sure about click action)</a>
- 
-<hr/>
- 
-Journey CRUD including steps to be mapped!
+  Transaction CRUD / Steps CRUD / Actions CRUD / Journey CURD / Actions to show<br/>
+  For each - multi-select-type widget set to single-select, top item is always 'new', under is a text box and too buttons (add/update and delete), click on row puts text in box / updates rest of boxes / changes button to update, click on new resets, add button adds, delete removes selected
 
-<hr/>
+  <hr/>
+  <button id="download_button">Click to download map as PNG</button> | <button id="print_button" style="background-color:#dd3333;">Click to print map</button> | <button id="toggle_button" style="background-color:#dd3333;">Click to toggle step references</button>
+  <hr/>
 
-Download Button(?) | Print Button(?)<br/>
-<a href="http://jsfiddle.net/8ypxW/3/?">Save DIV as PNG</a><br/>
-<a href="http://goo.gl/WUL9F">Print DIV</a>
+  <div id="map_area">
+    <h3>Transaction: <span id="transaction_name">None selected</span> | 
+    User journey: <span id="journey_name">None selected</span></h3>
+    <hr/>
 
- 
-<hr/>
+    <div id="map"></div>
 
-<div><h3>Transaction:</h3></div>
-<div><h3>User journey</h3></div>
-Map!<br/>
-<a href="http://goo.gl/wglghY">DOT language playground (see 'view source')</a>
+  </div>
  
 </body>
 </html>

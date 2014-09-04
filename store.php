@@ -24,7 +24,7 @@
   unset($_GET['action'];
   $id = 0;
   
-  if (($action == 'get') || ($action == 'update') || ($action == 'delete')) {
+  if (($action == 'getbyid') || ($action == 'getbytid') || ($action == 'update') || ($action == 'delete')) {
     $id = $_GET['id'];
     unset($_GET['id']; 
   }
@@ -32,8 +32,10 @@
   $sql_string = "";
   if ($action == 'getall') {
     $sql_string = "SELECT * FROM " . $table;
-  } elseif ($action == 'get') {
+  } elseif ($action == 'getbyid') {
     $sql_string = "SELECT * FROM " . $table . " WHERE id=" . $id;
+  } elseif ($action == 'getbytid') {
+    $sql_string = "SELECT * FROM " . $table . " WHERE transaction_id=" . $id;
   } elseif ($action == 'add') {
     $columns = "";
     $values = "";
@@ -61,7 +63,7 @@
     print $mysqli->insert_id;
   }
 
-  if (($action == 'getall' || $action == 'get')) {
+  if (($action == 'getall' || $action == 'getbyid') || $action == 'getbytid')) {
     $rows = array();
     while($row = mysql_fetch_assoc($result)) {
       $rows[] = $row;
