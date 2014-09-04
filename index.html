@@ -17,16 +17,21 @@
   
   <!-- jQuery Print Element -->
   <script type="text/javascript" src="jquery.printElement.js"></script>
- <script type="text/javascript" src="jquery.browser.js"></script>
+  <script type="text/javascript" src="jquery.browser.js"></script>
+  <script type="text/javascript" src="base64.js"></script>
   
   <!-- My CSS -->
-    <link href="my.css" rel="stylesheet" type="text/css" />
+  <link href="my.css" rel="stylesheet" type="text/css" />
 
   <script>
 
+    // Global variables
+    var gNetwork;
+    var gData;
+
     // Resize the map when window resizes
     window.onresize = function () {
-      network.redraw()
+      gNetwork.redraw()
     };
 
     // Draw the map
@@ -34,7 +39,7 @@
       try {
 
         // TEST DATA FOR NOW!
-        data = {
+        gData = {
           dot: "digraph {\
             node [shape=circle fontSize=16]\
             edge [length=100, color=gray, fontColor=black]\
@@ -47,8 +52,8 @@
         // create a network
         var container = $("#map")[0];
         var options = {};
-        network = new vis.Network(container, data, options);
-        network.redraw();
+        gNetwork = new vis.Network(container, gData, options);
+        gNetwork.redraw();
       }
       catch (err) {
         console.log(err.toString());
@@ -66,15 +71,20 @@
       });
 
       $("#print_button").click(function() {
-
-HERE HERE HERE
-  Try setting a global variable "printing" then using toDataURL (http://goo.gl/Zon9Y) to flip the canvas to an image, then call printElement, then register something like document.focus (?) to indicate when the print pop-up is closed and flip back to canvas and redraw
-HERE HERE HERE      
-      
+       
+//          var dataURI = $("#map")[0].toDataURL();
+        var image = Canvas2Image.saveAsPNG($("#map")[0], true);
+        $("#map").html(image);
+        delete gNetwork;
         $("#map_area").printElement();
+
+          
+          // Focus event used to catch print window closing - puts things back as they were
+          // TBD
+       
       });
 
-      // Initial drawing -- TEST FOR NOW
+      // Initial drawing
       draw();
 
     });
@@ -86,9 +96,10 @@ HERE HERE HERE
 <body>
 
   <h2>Transaction Mapper</h2>
-  All changes saved automatically (no access controls, no versioning). 
-  Send questions to <a href="mailto:david.durant@digital.cabinet-office.gov.uk">David Durant</a>.<br/>
-  Thanks to the folks behind <a href="http://visjs.org/">vis.js</a>, <a href="http://html2canvas.hertzen.com/">html2canvas</a>, <a href="http://www.nihilogic.dk/labs/canvas2image/">canvase2image</a> and <a href="http://projects.erikzaadi.com/jQueryPlugins/jQuery.printElement/">jQuery Print Element</a>.
+  All changes saved automatically (no access controls, no versioning). <a href="">This is a video on how it works</a>. 
+  Please send questions to <a href="mailto:david.durant@digital.cabinet-office.gov.uk">David Durant</a>.<br/>
+  Thanks to the folks behind <a href="http://visjs.org/">vis.js</a>, <a href="http://html2canvas.hertzen.com/">html2canvas</a>, <a href="http://www.nihilogic.dk/labs/canvas2image/">canvase2image</a> and <a href="http://projects.erikzaadi.com/jQueryPlugins/jQuery.printElement/">jQuery Print Element</a><p/>
+  <b>Add some undeletable examples</b>?
   
   <hr/>
 
