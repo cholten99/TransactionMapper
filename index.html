@@ -28,6 +28,7 @@
     // Global variables
     var gNetwork;
     var gData;
+    var gPrinting = false;
 
     // Resize the map when window resizes
     window.onresize = function () {
@@ -71,17 +72,23 @@
       });
 
       $("#print_button").click(function() {
-       
-//          var dataURI = $("#map")[0].toDataURL();
-        var image = Canvas2Image.saveAsPNG($("#map")[0], true);
-        $("#map").html(image);
-        delete gNetwork;
-        $("#map_area").printElement();
+        html2canvas($("#map_area"), {
+          onrendered: function(canvas) {
+            gPrinting = true;
+            var image = Canvas2Image.saveAsPNG(canvas, true); 
+            $("#print_area").html(image);
+            $("#print_area").printElement();
+          }
+        });
+      
+      });
 
-          
-          // Focus event used to catch print window closing - puts things back as they were
-          // TBD
-       
+      // Focus event used to catch print window closing - puts things back as they were before printing
+      $(window).focus(function() {
+        if (gPrinting) {
+          $("#print_area").html("");
+          gPrinting = false;
+        }
       });
 
       // Initial drawing
@@ -99,15 +106,24 @@
   All changes saved automatically (no access controls, no versioning). <a href="">This is a video on how it works</a>. 
   Please send questions to <a href="mailto:david.durant@digital.cabinet-office.gov.uk">David Durant</a>.<br/>
   Thanks to the folks behind <a href="http://visjs.org/">vis.js</a>, <a href="http://html2canvas.hertzen.com/">html2canvas</a>, <a href="http://www.nihilogic.dk/labs/canvas2image/">canvase2image</a> and <a href="http://projects.erikzaadi.com/jQueryPlugins/jQuery.printElement/">jQuery Print Element</a><p/>
+  <b>TBD:</b>
   <b>Add some undeletable examples</b>?
   
   <hr/>
 
-  Transaction CRUD / Steps CRUD / Actions CRUD / Journey CURD / Actions to show<br/>
+  <div id="crud_wrapper">
+  <div id="transaction_area"><b>Transactions</b></div>
+  <div id="steps_area"><b>Steps for transaction</b></div>
+  <div id="actions_area"><b>Actions for transaction</b></div>
+  <div id="journey_area"><b>Journeys for transaction</b></div>
+  <div id="actions_selected_area"><b>Actions to show</b></div>
+  </div>
+
+  <p/>
   For each - multi-select-type widget set to single-select, top item is always 'new', under is a text box and too buttons (add/update and delete), click on row puts text in box / updates rest of boxes / changes button to update, click on new resets, add button adds, delete removes selected
 
   <hr/>
-  <button id="download_button">Click to download map as PNG</button> | <button id="print_button" style="background-color:#dd3333;">Click to print map</button> | <button id="toggle_button" style="background-color:#dd3333;">Click to toggle step references</button>
+  <button id="download_button">Click to download map as PNG</button> | <button id="print_button">Click to print map</button> | <button id="toggle_button" style="background-color:#dd3333;">Click to toggle step references</button>
   <hr/>
 
   <div id="map_area">
@@ -116,6 +132,9 @@
     <hr/>
 
     <div id="map"></div>
+
+    <!-- Hidden element for printing PNG -->
+    <div id="print_area"></div>
 
   </div>
  
