@@ -29,6 +29,7 @@
     var gNetwork;
     var gData;
     var gPrinting = false;
+    var gShowControls = true;
 
     // Resize the map when window resizes
     window.onresize = function () {
@@ -52,7 +53,7 @@
 
         // create a network
         var container = $("#map")[0];
-        var options = {};
+        var options = { height: '400px' };
         gNetwork = new vis.Network(container, gData, options);
         gNetwork.redraw();
       }
@@ -62,6 +63,16 @@
     }
 
     $(function() {
+
+      $("#toggle_controls_button").click(function() {
+        if (gShowControls == true) {
+          gShowControls = false;
+          $("#crud_wrapper").hide();
+        } else {
+          gShowControls = true;
+          $("#crud_wrapper").show();
+        }
+      });
 
       $("#download_button").click(function() {
         html2canvas($("#map_area"), {
@@ -105,25 +116,83 @@
   <h2>Transaction Mapper</h2>
   All changes saved automatically (no access controls, no versioning). <a href="">This is a video on how it works</a>. 
   Please send questions to <a href="mailto:david.durant@digital.cabinet-office.gov.uk">David Durant</a>.<br/>
-  Thanks to the folks behind <a href="http://visjs.org/">vis.js</a>, <a href="http://html2canvas.hertzen.com/">html2canvas</a>, <a href="http://www.nihilogic.dk/labs/canvas2image/">canvase2image</a> and <a href="http://projects.erikzaadi.com/jQueryPlugins/jQuery.printElement/">jQuery Print Element</a><p/>
-  <b>TBD:</b>
-  <b>Add some undeletable examples</b>?
   
   <hr/>
 
+  | <button id="toggle_controls_button">Click to toggle controls</button> | <button id="download_button">Click to download map as PNG</button> | <button id="print_button">Click to print map</button> | <button id="toggle_button" style="background-color:#dd3333;">Click to toggle step references</button> |
+  <hr/>
+
   <div id="crud_wrapper">
-  <div id="transaction_area"><b>Transactions</b></div>
-  <div id="steps_area"><b>Steps for transaction</b></div>
-  <div id="actions_area"><b>Actions for transaction</b></div>
-  <div id="journey_area"><b>Journeys for transaction</b></div>
-  <div id="actions_selected_area"><b>Actions to show</b></div>
+
+  <div id="transaction_area">
+    <b>Transactions</b>
+    <select name="transaction_select" size="8" style="width:95%;" multiple>
+      <option value="new">-> New <-</option>
+      <option value="saab">Saab</option>
+      <option value="opel">Opel</option>
+    </select><p/>
+    <input id="transaction_input" style="width:55%;"></input>
+    <button id="transaction_button">Add</button>
+    <button id="transaction_delete_button">Delete</button>
+  </div>
+  
+  <div id="steps_area">
+    <b>Steps for transaction</b>
+    <select name="steps_select" size="8" style="width:95%;" multiple>
+      <option value="new">-> New <-</option>
+      <option value="saab">Saab</option>
+      <option value="opel">Opel</option>
+    </select><p/>
+    <input id="steps_input" style="width:55%;"></input>
+    <button id="steps_button">Add</button>
+    <button id="steps_delete_button">Delete</button>
+  </div>
+  
+  <div id="actions_area">
+    <b>Actions for transaction</b>
+    <select name="actions_select" size="5" style="width:95%;" multiple>
+      <option value="new">-> New <-</option>
+      <option value="saab">Saab</option>
+      <option value="opel">Opel</option>
+    </select><p/>
+    <select name="actions_thing_one_select" style="width:45%;">
+      <option value="new">Stuff</option>
+      <option value="saab">Saab</option>
+      <option value="opel">Opel</option>
+    </select>
+    &nbsp;
+    <select name="actions_thing_two_select" style="width:45%;">
+      <option value="new">Stuff</option>
+      <option value="saab">Saab</option>
+      <option value="opel">Opel</option>
+    </select><p/>
+    <input id="actions_input" style="width:55%;"></input>
+    <button id="actions_button">Add</button>
+    <button id="actions_delete_button">Delete</button>
+  </div>
+  
+  <div id="journey_area">
+    <b>Journeys for transaction</b>
+    <select name="journey_select" size="8" style="width:95%;" multiple>
+      <option value="new">-> New <-</option>
+      <option value="saab">Saab</option>
+      <option value="opel">Opel</option>
+    </select><p/>
+    <input id="journey_input" style="width:55%;"></input>
+    <button id="journey_button">Add</button>
+    <button id="jounrey_delete_button">Delete</button>
+  </div>
+  
+  <div id="actions_selected_area">
+    <b>Actions to show</b>
+    <select name="actions_show_select" size="8" style="width:95%;" multiple>
+      <option value="new">-> New <-</option>
+      <option value="saab">Saab</option>
+      <option value="opel">Opel</option>
+    </select><p/>
+  </div>
   </div>
 
-  <p/>
-  For each - multi-select-type widget set to single-select, top item is always 'new', under is a text box and too buttons (add/update and delete), click on row puts text in box / updates rest of boxes / changes button to update, click on new resets, add button adds, delete removes selected
-
-  <hr/>
-  <button id="download_button">Click to download map as PNG</button> | <button id="print_button">Click to print map</button> | <button id="toggle_button" style="background-color:#dd3333;">Click to toggle step references</button>
   <hr/>
 
   <div id="map_area">
@@ -137,6 +206,9 @@
     <div id="print_area"></div>
 
   </div>
+  
+  <hr/>
+    Thanks to the folks behind <a href="http://visjs.org/">vis.js</a>, <a href="http://html2canvas.hertzen.com/">html2canvas</a>, <a href="http://www.nihilogic.dk/labs/canvas2image/">canvase2image</a> and <a href="http://projects.erikzaadi.com/jQueryPlugins/jQuery.printElement/">jQuery Print Element</a><p/>
  
 </body>
 </html>
