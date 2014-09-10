@@ -27,7 +27,19 @@
 
     // Global variables
     var gNetwork;
-    var gData;
+
+    // TEST DATA FOR NOW!
+    var gData = {
+          dot: "digraph {\
+            node [shape=circle fontSize=16]\
+            edge [length=100, color=gray, fontColor=black]\
+            A -> B;\
+            B -> C;\
+            C -> A;\
+          }"
+        };
+    var gCanvas;
+    var gOptions = { height:"400px" };
     var gPrinting = false;
     var gShowControls = true;
 
@@ -39,22 +51,9 @@
     // Draw the map
     function draw () {
       try {
-
-        // TEST DATA FOR NOW!
-        gData = {
-          dot: "digraph {\
-            node [shape=circle fontSize=16]\
-            edge [length=100, color=gray, fontColor=black]\
-            A -> B;\
-            B -> C;\
-            C -> A;\
-          }"
-        };
-
         // create a network
-        var container = $("#map")[0];
-        var options = { height: '400px' };
-        gNetwork = new vis.Network(container, gData, options);
+        gCanvas = $("#map")[0];
+        gNetwork = new vis.Network(gCanvas, gData, gOptions);
         gNetwork.redraw();
       }
       catch (err) {
@@ -62,8 +61,14 @@
       }
     }
 
+    // Faking it for now!
+    function getNetworkData() {
+      return("A -> B;B -> C;C -> A;");
+    }
+
     $(function() {
 
+      // Show controls
       $("#toggle_controls_button").click(function() {
         if (gShowControls == true) {
           gShowControls = false;
@@ -74,6 +79,7 @@
         }
       });
 
+      // Download PNG of network
       $("#download_button").click(function() {
         html2canvas($("#map_area"), {
           onrendered: function(canvas) {
@@ -82,6 +88,7 @@
         });
       });
 
+      // Print network
       $("#print_button").click(function() {
         html2canvas($("#map_area"), {
           onrendered: function(canvas) {
@@ -91,7 +98,6 @@
             $("#print_area").printElement();
           }
         });
-      
       });
 
       // Focus event used to catch print window closing - puts things back as they were before printing
@@ -100,6 +106,19 @@
           $("#print_area").html("");
           gPrinting = false;
         }
+      });
+
+      // Handle change in canvas height
+      $("#canvas_height_slider").change(function() {
+        var newHeight = $("#canvas_height_slider").val() + "px";
+        gOptions.height = newHeight;
+        draw();
+      });
+      
+      // Handle change in line length
+      $("#line_length_slider").change(function() {
+        gData.dot = "digraph {node [shape=circle fontSize=16] edge [length=" + $("#line_length_slider").val() + ", color=gray, fontColor=black]" + getNetworkData() + "}";
+        draw();
       });
 
       // Initial drawing
@@ -119,7 +138,10 @@
   
   <hr/>
 
-  | <button id="toggle_controls_button">Click to toggle controls</button> | <button id="download_button">Click to download map as PNG</button> | <button id="print_button">Click to print map</button> | <button id="toggle_button" style="background-color:#dd3333;">Click to toggle step references</button> |
+  | <button id="toggle_controls_button">Click to toggle controls</button> | <button id="download_button">Click to download map as PNG</button> | 
+  <button id="print_button">Click to print map</button> | <button id="toggle_button" style="background-color:#dd3333;">Click to toggle step references</button> |
+  Height of canvas: <input id="canvas_height_slider" type="range" min="400" max="800" step="100" value="400"/> | 
+  Length of lines: <input id="line_length_slider" type="range" min="100" max="400" step="100" value="100"/> |
   <hr/>
 
   <div id="crud_wrapper">
