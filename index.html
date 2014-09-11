@@ -7,13 +7,17 @@
   <!-- jQuery -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-  <!-- html2canvas -->
-  <script type="text/javascript" src="js/html2canvas.js"></script>
-  <script type="text/javascript" src="js/canvas2image.js"></script>
+  <!-- jQuery UI -->  
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
 
   <!-- Vis DOT mapper -->
   <script type="text/javascript" src="js/vis.js"></script>
   <link href="css/vis.css" rel="stylesheet" type="text/css" />
+
+  <!-- html2canvas -->
+  <script type="text/javascript" src="js/html2canvas.js"></script>
+  <script type="text/javascript" src="js/canvas2image.js"></script>
   
   <!-- jQuery Print Element -->
   <script type="text/javascript" src="js/jquery.printElement.js"></script>
@@ -29,6 +33,9 @@
 </head>
 
 <body>
+
+  <!-- Delete confirmation modal dialogue -->
+  <div id="dialog_confirm" title="Some title" hidden></div>
 
   <h2>Transaction Mapper</h2>
   All changes saved automatically (no access controls, no versioning). <a href="">This is a video on how it works</a>. 

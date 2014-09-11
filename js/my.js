@@ -1,5 +1,9 @@
 // Global variables
 var gNetwork;
+var gCanvas;
+var gOptions = { height:"400px" };
+var gPrinting = false;
+var gShowControls = true;
 
 // TEST DATA FOR NOW!
 var gData = {
@@ -12,10 +16,27 @@ C -> A;\
   }"
 };
 
-var gCanvas;
-var gOptions = { height:"400px" };
-var gPrinting = false;
-var gShowControls = true;
+// Delete confirmation utility function
+function delete_item() {
+  $("#dialog_confirm").dialog({
+    resizable: false,
+    modal: true,
+    buttons: {
+      "Delete": function() {
+        $(this).dialog( "close" );
+        
+      },
+      Cancel: function() {
+        $(this).dialog( "close" );
+      }
+    }
+  });
+}
+
+// Delete handling functions
+function delete_transaction() {
+//    $.load("php/store.php", { 
+}
 
 // Resize the map when window resizes
 window.onresize = function () {
@@ -40,12 +61,8 @@ function getNetworkData() {
   return("A -> B;B -> C;C -> A;");
 }
 
+// Onload function
 $(function() {
-
-  // Handle transaction control select change
-  $("#transaction_select").change(function() {
-console.log("Here");
-  });
 
   // Show controls button
   $("#toggle_controls_button").click(function() {
@@ -102,13 +119,34 @@ console.log("Here");
 
   // Set up initial state of controls
   $("#transaction_select").val("new");
-  $("#transaction_delete_button").attr("disabled", true);
-  $('#steps_area :input').attr("disabled", true);
-  $('#actions_area :input').attr("disabled", true);
-  $('#journeys_area :input').attr("disabled", true);
-  $('#actions_selected_area :input').attr("disabled", true);
+  transaction_select_clicked();
 
   // Initial drawing of network
   draw();
+  
+  // Handle transaction_area
+  $("#transaction_select").change(function () {
+    transaction_select_clicked();
+  });
+
+  function transaction_select_clicked() {
+
+console.log("Select clicked");
+
+//    $("#transaction_delete_button").attr("disabled", true);
+    $('#steps_area :input').attr("disabled", true);
+    $('#actions_area :input').attr("disabled", true);
+    $('#journeys_area :input').attr("disabled", true);
+    $('#actions_selected_area :input').attr("disabled", true);
+  }
+
+  $("#transaction_button").click(function () {
+console.log("Button clicked");
+console.log("Value is " + $("#transaction_button").html());
+  });
+
+  $("#transaction_delete_button").click(function () {
+    delete_item("delete_transction");
+  });
 
 });

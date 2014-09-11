@@ -18,15 +18,15 @@
     print "Failed to connect to MySQL: " . $mysqli->connect_error;
   }
 
-  $table = $_GET['table'];
-  unset($_GET['table'];
-  $action = $_GET['action'];
-  unset($_GET['action'];
+  $table = $_POST['table'];
+  unset($_POST['table'];
+  $action = $_POST['action'];
+  unset($_POST['action'];
   $id = 0;
   
   if (($action == 'getbyid') || ($action == 'getbytid') || ($action == 'update') || ($action == 'delete')) {
-    $id = $_GET['id'];
-    unset($_GET['id']; 
+    $id = $_POST['id'];
+    unset($_POST['id']; 
   }
   
   $sql_string = "";
@@ -39,7 +39,7 @@
   } elseif ($action == 'add') {
     $columns = "";
     $values = "";
-    foreach ($_GET as $key => $value) {
+    foreach ($_POST as $key => $value) {
       $columns .= "'" . $key . "',";
       $values .= "'" . $value . "',";
     }
@@ -48,7 +48,7 @@
     $sql_string = "INSERT INTO " . $table . "(" . $columns . ") VALUES (" . $values . ")";
   } elseif ($action == 'update') {
     $sql_string = "UPDATE " . $table . "SET ";
-    foreach ($_GET as $key => $value) {
+    foreach ($_POST as $key => $value) {
       $sql_string .= "'" . $key . "'='" . $value . "',";
     }
     $sql_string = rtrim($sql_string, ",");
