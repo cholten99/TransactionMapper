@@ -17,17 +17,20 @@ C -> A;\
 };
 
 // Delete confirmation utility function
-function delete_item() {
+function delete_item(functionName) {
+  $("#dialog_confirm").data("delete_function", functionName);
+
   $("#dialog_confirm").dialog({
     resizable: false,
     modal: true,
     buttons: {
       "Delete": function() {
-        $(this).dialog( "close" );
-        
+        $(this).dialog("close");
+        functionName = $("#dialog_confirm").data("delete_function");
+        window[functionName]();
       },
       Cancel: function() {
-        $(this).dialog( "close" );
+        $(this).dialog("close");
       }
     }
   });
@@ -35,6 +38,7 @@ function delete_item() {
 
 // Delete handling functions
 function delete_transaction() {
+console.log("delete_transaction");
 //    $.load("php/store.php", { 
 }
 
@@ -146,7 +150,7 @@ console.log("Value is " + $("#transaction_button").html());
   });
 
   $("#transaction_delete_button").click(function () {
-    delete_item("delete_transction");
+    delete_item("delete_transaction");
   });
 
 });
