@@ -12,7 +12,7 @@
   $pass = getenv("DB1_PASS");
 
   $mysqli = new mysqli($host, $user, $pass);
-  $mysqli->select_db("transaction_mapping");
+  $mysqli->select_db("transaction_mapper");
 
   if ($mysqli->connect_errno) {
     print "Failed to connect to MySQL: " . $mysqli->connect_error;
