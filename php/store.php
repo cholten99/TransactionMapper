@@ -50,13 +50,13 @@
     $columns = rtrim($columns, ",");
     $values = rtrim($values, ",");
     $sql_string = "INSERT INTO " . $table . "(" . $columns . ") VALUES (" . $values . ")";
-  } elseif ($action == 'update') {
-    $sql_string = "UPDATE " . $table . "SET ";
+  } elseif ($action == "update") {
+    $sql_string = "UPDATE " . $table . " SET ";
     foreach ($_POST as $key => $value) {
-      $sql_string .= "'" . $key . "'='" . $value . "',";
+      $sql_string .= $key . "='" . $value . "',";
     }
     $sql_string = rtrim($sql_string, ",");
-    $sql_string .= "WHERE id=" . $id;
+    $sql_string .= " WHERE id=" . $id;
   } else {
     $sql_string = "DELETE FROM " . $table . " WHERE id=" . $id;
   }

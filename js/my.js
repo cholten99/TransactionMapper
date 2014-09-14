@@ -36,12 +36,6 @@ function delete_item(functionName) {
   });
 }
 
-// Delete handling functions
-function delete_transaction() {
-console.log("delete_transaction");
-//    $.load("php/store.php", { 
-}
-
 // Resize the map when window resizes
 window.onresize = function () {
   gNetwork.redraw()
@@ -63,6 +57,44 @@ function draw () {
 // Faking it for now!
 function getNetworkData() {
   return("A -> B;B -> C;C -> A;");
+}
+
+// Functions to handle transactions_area
+function update_transaction_select() {
+  $.post("php/store.php", { table: "transactions", action: "getAll" }, function(data, status) {
+    $("#transaction_select").find("option").remove();
+    $("#transaction_select").append("<option value='-1'>-> New <-</option>");
+    transactionsArray = JSON.parse(data);
+    for (var i=0; i<transactionsArray.length; i++) {
+      $("#transaction_select").append("<option value=" + transactionsArray[i].id + ">" + transactionsArray[i].name + "</option>");
+    }
+    $("#transaction_select").val("-1");
+  });
+}
+
+function transaction_select_clicked() {
+  if ($("#transaction_select").val() == -1) {
+    $("#transaction_input").val("");
+    $("#transaction_name").html("None selected");
+    $("#transaction_button").html("Add");
+    $("#transaction_delete_button").attr("disabled", true);
+    $('#steps_area :input').attr("disabled", true);
+    $('#actions_area :input').attr("disabled", true);
+    $('#journeys_area :input').attr("disabled", true);
+    $('#actions_selected_area :input').attr("disabled", true);
+  } else {
+    $("#transaction_button").html("Update");
+    $("#transaction_delete_button").attr("disabled", false);
+    $("#transaction_input").val($("#transaction_select option:selected").text());
+    $("#transaction_name").html($("#transaction_select option:selected").text());
+  }
+}
+
+function delete_transaction() {
+  transactionId = $("#transaction_select").val();
+  $.post("php/store.php", { table: "transactions", action: "delete", id: transactionId }, function() {
+    update_transaction_select();
+  });
 }
 
 // Onload function
@@ -122,43 +154,16 @@ $(function() {
   });
 
   // Set up initial state of controls
-  $("#transaction_select").val("-1");
   update_transaction_select()
   transaction_select_clicked();
 
   // Initial drawing of network
   draw();
   
-  // Handle transaction_area
+  // transaction_area event handling
   $("#transaction_select").change(function () {
     transaction_select_clicked();
   });
-
-  function update_transaction_select() {
-    $.post("php/store.php", { table: "transactions", action: "getAll" }, function(data, status) {
-      transactionsArray = JSON.parse(data);
-
-      for (var i=0; i<transactionsArray.length; i++) {
-        $("#transaction_select").append("<option value=" + transactionsArray[i].id + ">" + transactionsArray[i].name + "</option>");
-      }
-
-    });
-  }
-
-  function transaction_select_clicked() {
-
-    // Handle new
-    if ($("#transaction_select").val() == -1) {
-      $("#transaction_name").html("None selected");
-      $("#transaction_delete_button").attr("disabled", true);
-      $('#steps_area :input').attr("disabled", true);
-      $('#actions_area :input').attr("disabled", true);
-      $('#journeys_area :input').attr("disabled", true);
-      $('#actions_selected_area :input').attr("disabled", true);
-    } else {
-      $("#transaction_name").html($("#transaction_select option:selected").text());
-    }
-  }
 
   $("#transaction_button").click(function () {
     buttonValue = $("#transaction_button").html();
@@ -169,7 +174,9 @@ $(function() {
         update_transaction_select();
       });
     } else {
-      $.post("php/store.php", { table: "transactions", action: "update", id: transactionId, name: transactionName });
+      $.post("php/store.php", { table: "transactions", action: "update", id: transactionId, name: transactionName }, function() {
+        update_transaction_select();
+      });
     }
   });
 
