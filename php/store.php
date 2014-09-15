@@ -11,6 +11,8 @@
   include "logging.php";
   ClearLog();
 
+TestLogArray($_POST);
+
   $host = getenv("DB1_HOST");
   $user = getenv("DB1_USER");
   $pass = getenv("DB1_PASS");
@@ -35,7 +37,7 @@
 
   $sql_string = "";
   if ($action == "getAll") {
-    $sql_string = "SELECT * FROM " . $table;
+    $sql_string = "SELECT * FROM " . $table . " ORDER BY name";
   } elseif ($action == "getById") {
     $sql_string = "SELECT * FROM " . $table . " WHERE id=" . $id;
   } elseif ($action == "getByTransactionId") {

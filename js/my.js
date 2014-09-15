@@ -69,6 +69,7 @@ function update_transaction_select() {
       $("#transaction_select").append("<option value=" + transactionsArray[i].id + ">" + transactionsArray[i].name + "</option>");
     }
     $("#transaction_select").val("-1");
+    transaction_select_clicked();
   });
 }
 
@@ -87,6 +88,9 @@ function transaction_select_clicked() {
     $("#transaction_delete_button").attr("disabled", false);
     $("#transaction_input").val($("#transaction_select option:selected").text());
     $("#transaction_name").html($("#transaction_select option:selected").text());
+    $("#steps_area :input").attr("disabled", false);
+    update_steps_select();
+    $("#journeys_area :input").attr("disabled", false);
   }
 }
 
@@ -94,6 +98,40 @@ function delete_transaction() {
   transactionId = $("#transaction_select").val();
   $.post("php/store.php", { table: "transactions", action: "delete", id: transactionId }, function() {
     update_transaction_select();
+  });
+}
+
+// Functions to handle steps_area
+function update_steps_select() {
+  transactionId = $("#transaction_select").val();
+  $.post("php/store.php", { table: "steps", action: "getByTransactionId", id: transactionId }, function(data, status) {
+    $("#steps_select").find("option").remove();
+    $("#steps_select").append("<option value='-1'>-> New <-</option>");
+    stepsArray = JSON.parse(data);
+    for (var i=0; i<stepsArray.length; i++) {
+      $("#steps_select").append("<option value=" + stepsArray[i].id + ">" + stepsArray[i].name + "</option>");
+    }
+    $("#steps_select").val("-1");
+    steps_select_clicked();
+  });
+}
+
+function steps_select_clicked() {
+  if ($("#steps_select").val() == -1) {
+    $("#steps_input").val("");
+    $("#steps_button").html("Add");
+    $("#steps_delete_button").attr("disabled", true);
+  } else {
+    $("#steps_button").html("Update");
+    $("#steps_delete_button").attr("disabled", false);
+    $("#steps_input").val($("#steps_select option:selected").text());
+  }
+}
+
+function delete_step() {
+  stepsId = $("#steps_select").val();
+  $.post("php/store.php", { table: "steps", action: "delete", id: stepsId }, function() {
+    update_steps_select();
   });
 }
 
@@ -154,8 +192,7 @@ $(function() {
   });
 
   // Set up initial state of controls
-  update_transaction_select()
-  transaction_select_clicked();
+  update_transaction_select();
 
   // Initial drawing of network
   draw();
@@ -168,6 +205,7 @@ $(function() {
   $("#transaction_button").click(function () {
     buttonValue = $("#transaction_button").html();
     transactionName = $("#transaction_input").val();
+    if (transactionName == "") { return; }
     transactionId = $("#transaction_select").val();
     if (buttonValue == "Add") {
       $.post("php/store.php", { table: "transactions", action: "add", name: transactionName }, function() {
@@ -184,28 +222,30 @@ $(function() {
     delete_item("delete_transaction");
   });
 
-  // Handle steps_area
+  // steps_area event handling
   $("#steps_select").change(function () {
     steps_select_clicked();
   });
 
-  function steps_select_clicked() {
-  }
-
   $("#steps_button").click(function () {;
     buttonValue = $("#steps_button").html();
     stepsName = $("#steps_input").val();
+    if (stepsName == "") { return; }
     transactionId = $("#transaction_select").val()[0];
     stepsId = $("#steps_select").val();
     if (buttonValue == "Add") {
-      $.post("php/store.php", { table: "steps", action: "add", name: stepsName, transaction_id: transactionId });
+      $.post("php/store.php", { table: "steps", action: "add", name: stepsName, transaction_id: transactionId }, function() {
+        update_steps_select();
+      });
     } else {
-      $.post("php/store.php", { table: "steps", action: "update", id: stepsId, name: stepsName });
+      $.post("php/store.php", { table: "steps", action: "update", id: stepsId, name: stepsName }, function() {
+        update_steps_select();
+      });
     }
   });
 
   $("#steps_delete_button").click(function () {
-    delete_item("delete_steps");
+    delete_item("delete_step");
   });
 
 });
