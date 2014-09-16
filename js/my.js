@@ -80,9 +80,12 @@ function transaction_select_clicked() {
     $("#transaction_button").html("Add");
     $("#transaction_delete_button").attr("disabled", true);
     $('#steps_area :input').attr("disabled", true);
-    $('#actions_area :input').attr("disabled", true);
+    update_steps_select();
     $('#journeys_area :input').attr("disabled", true);
-    $('#actions_selected_area :input').attr("disabled", true);
+    update_journeys_select();
+    $('#actions_area :input').attr("disabled", true);
+    update_actions_select();
+    $('#actions_area :input').attr("disabled", true);
   } else {
     $("#transaction_button").html("Update");
     $("#transaction_delete_button").attr("disabled", false);
@@ -91,6 +94,9 @@ function transaction_select_clicked() {
     $("#steps_area :input").attr("disabled", false);
     update_steps_select();
     $("#journeys_area :input").attr("disabled", false);
+    update_journeys_select();
+    $('#actions_area :input').attr("disabled", false);
+    update_actions_select();
   }
 }
 
@@ -132,6 +138,98 @@ function delete_step() {
   stepsId = $("#steps_select").val();
   $.post("php/store.php", { table: "steps", action: "delete", id: stepsId }, function() {
     update_steps_select();
+  });
+}
+
+// Functions to handle journeys_area
+function update_journeys_select() {
+  transactionId = $("#transaction_select").val();
+  $.post("php/store.php", { table: "journeys", action: "getByTransactionId", id: transactionId }, function(data, status) {
+    $("#journeys_select").find("option").remove();
+    $("#journeys_select").append("<option value='-1'>-> New <-</option>");
+    journeysArray = JSON.parse(data);
+    for (var i=0; i<journeysArray.length; i++) {
+      $("#journeys_select").append("<option value=" + journeysArray[i].id + ">" + journeysArray[i].name + "</option>");
+    }
+    $("#journeys_select").val("-1");
+    journeys_select_clicked();
+  });
+}
+
+function journeys_select_clicked() {
+  if ($("#journeys_select").val() == -1) {
+    $("#journeys_input").val("");
+    $("#journeys_button").html("Add");
+    $("#journeys_delete_button").attr("disabled", true);
+    $("#journey_name").html("None selected");
+  } else {
+    $("#journeys_button").html("Update");
+    $("#journeys_delete_button").attr("disabled", false);
+    $("#journeys_input").val($("#journeys_select option:selected").text());
+    $("#journey_name").html($("#journeys_select option:selected").text());
+  }
+}
+
+function delete_journey() {
+  journeysId = $("#journeys_select").val();
+  $.post("php/store.php", { table: "journeys", action: "delete", id: journeysId }, function() {
+    update_journeys_select();
+  });
+}
+
+// Functions to handle actions_area
+function update_actions_select() {
+  transactionId = $("#transaction_select").val();
+  $.post("php/store.php", { table: "actions", action: "getByTransactionId", id: transactionId }, function(data, status) {
+    $("#actions_select").find("option").remove();
+    $("#actions_select").append("<option value='-1'>-> New <-</option>");
+    actionsArray = JSON.parse(data);
+    for (var i=0; i<actionsArray.length; i++) {
+      $("#actions_select").append("<option value=" + actionsArray[i].id + ">" + actionsArray[i].name + "</option>");
+    }
+    $("#actions_select").val("-1");
+
+    $.post("php/store.php", { table: "steps", action: "getByTransactionId", id: transactionId }, function(data, status) {
+      $("#actions_thing_one_select").find("option").remove();
+      $("#actions_thing_two_select").find("option").remove();
+      stepsArray = JSON.parse(data);
+      for (var i=0; i<stepsArray.length; i++) {
+        $("#actions_thing_one_select").append("<option value=" + stepsArray[i].id + ">" + stepsArray[i].name + "</option>");
+        $("#actions_thing_two_select").append("<option value=" + stepsArray[i].id + ">" + stepsArray[i].name + "</option>");
+      }
+      actions_select_clicked();
+    });
+
+  });
+
+}
+
+function actions_select_clicked() {
+  if ($("#actions_select").val() == -1) {
+    $("#actions_input").val("");
+    $("#actions_button").html("Add");
+    $("#actions_delete_button").attr("disabled", true);
+    $('select[id="actions_thing_one_select"] option:eq(0)').attr('selected', 'selected');
+    $('select[id="actions_thing_two_select"] option:eq(0)').attr('selected', 'selected');
+  } else {
+    $("#actions_button").html("Update");
+    $("#actions_delete_button").attr("disabled", false);
+    $("#actions_input").val($("#actions_select option:selected").text());
+    actionsId = $("#actions_select").val();
+    $.post("php/store.php", { table: "actions", action: "getById", id: actionsId }, function(data, status) {
+      stepsArray = JSON.parse(data);
+      step_one_id = stepsArray[0].step_one_id;
+      step_two_id = stepsArray[0].step_two_id;
+      $("#actions_thing_one_select").val(step_one_id);
+      $("#actions_thing_two_select").val(step_two_id);
+    });
+  }
+}
+
+function delete_action() {
+  actionsId = $("#actions_select").val();
+  $.post("php/store.php", { table: "actions", action: "delete", id: actionsId }, function() {
+    update_actions_select();
   });
 }
 
@@ -246,6 +344,60 @@ $(function() {
 
   $("#steps_delete_button").click(function () {
     delete_item("delete_step");
+  });
+
+  // journeys_area event handling
+  $("#journeys_select").change(function () {
+    journeys_select_clicked();
+  });
+
+  $("#journeys_button").click(function () {;
+    buttonValue = $("#journeys_button").html();
+    journeysName = $("#journeys_input").val();
+    if (journeysName == "") { return; }
+    transactionId = $("#transaction_select").val()[0];
+    journeysId = $("#journeys_select").val();
+    if (buttonValue == "Add") {
+      $.post("php/store.php", { table: "journeys", action: "add", name: journeysName, transaction_id: transactionId }, function() {
+        update_journeys_select();
+      });
+    } else {
+      $.post("php/store.php", { table: "journeys", action: "update", id: journeysId, name: journeysName }, function() {
+        update_journeys_select();
+      });
+    }
+  });
+
+  $("#journeys_delete_button").click(function () {
+    delete_item("delete_journey");
+  });
+
+  // actions_area event handling
+  $("#actions_select").change(function () {
+    actions_select_clicked();
+  });
+
+  $("#actions_button").click(function () {;
+    buttonValue = $("#actions_button").html();
+    actionsName = $("#actions_input").val();
+    if (actionsName == "") { return; }
+    transactionId = $("#transaction_select").val()[0];
+    actionsId = $("#actions_select").val();
+    stepOneId = $("#actions_thing_one_select").val();
+    stepTwoId = $("#actions_thing_two_select").val();
+    if (buttonValue == "Add") {
+      $.post("php/store.php", { table: "actions", action: "add", name: actionsName, transaction_id: transactionId, step_one_id: stepOneId, step_two_id: stepTwoId }, function() {
+        update_actions_select();
+      });
+    } else {
+      $.post("php/store.php", { table: "actions", action: "update", id: actionsId, name: actionsName, step_one_id: stepOneId, step_two_id: stepTwoId }, function() {
+        update_actions_select();
+      });
+    }
+  });
+
+  $("#actions_delete_button").click(function () {
+    delete_item("delete_action");
   });
 
 });

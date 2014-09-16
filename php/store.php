@@ -9,9 +9,8 @@
 
   // For logging
   include "logging.php";
-  ClearLog();
-
-TestLogArray($_POST);
+//  ClearLog();
+//  TestLogArray($_POST);
 
   $host = getenv("DB1_HOST");
   $user = getenv("DB1_USER");
@@ -39,9 +38,9 @@ TestLogArray($_POST);
   if ($action == "getAll") {
     $sql_string = "SELECT * FROM " . $table . " ORDER BY name";
   } elseif ($action == "getById") {
-    $sql_string = "SELECT * FROM " . $table . " WHERE id=" . $id;
+    $sql_string = "SELECT * FROM " . $table . " WHERE id=" . $id . " ORDER BY name";
   } elseif ($action == "getByTransactionId") {
-    $sql_string = "SELECT * FROM " . $table . " WHERE transaction_id=" . $id;
+    $sql_string = "SELECT * FROM " . $table . " WHERE transaction_id=" . $id . " ORDER BY name";
   } elseif ($action == "add") {
     $columns = "";
     $values = "";
