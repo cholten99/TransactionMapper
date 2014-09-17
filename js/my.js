@@ -4,17 +4,8 @@ var gCanvas;
 var gOptions = { height:"400px" };
 var gPrinting = false;
 var gShowControls = true;
-
-// TEST DATA FOR NOW!
-var gData = {
-  dot: "digraph {\
-node [shape=circle fontSize=16]\
-edge [length=100, color=gray, fontColor=black]\
-A -> B;\
-B -> C;\
-C -> A;\
-  }"
-};
+var gLineLength = 100;
+var gData = {};
 
 // Delete confirmation utility function
 function delete_item(functionName) {
@@ -43,20 +34,22 @@ window.onresize = function () {
 
 // Draw the map
 function draw () {
-  try {
-    // create a network
-    gCanvas = $("#map")[0];
-    gNetwork = new vis.Network(gCanvas, gData, gOptions);
-    gNetwork.redraw();
-  }
-  catch (err) {
-    console.log(err.toString());
-  }
-}
 
-// Faking it for now!
-function getNetworkData() {
-  return("A -> B;B -> C;C -> A;");
+  journeysId = $("#journeys_select").val();
+  $.post("php/store.php", { table: "journeys", action: "getNetworkString", id: journeysId }, function(data, status) {
+    gData.dot = "digraph { node [shape=circle fontSize=16] edge [length=" + gLineLength + ", color=gray, fontColor=black] " + data + "}";
+
+    try {
+      gCanvas = $("#map")[0];
+      gNetwork = new vis.Network(gCanvas, gData, gOptions);
+      gNetwork.redraw();
+    }
+    catch (err) {
+      console.log(err.toString());
+    }
+  
+  });
+  
 }
 
 // Functions to handle transactions_area
@@ -117,6 +110,7 @@ function update_steps_select() {
     for (var i=0; i<stepsArray.length; i++) {
       $("#steps_select").append("<option value=" + stepsArray[i].id + ">" + stepsArray[i].name + "</option>");
     }
+    update_actions_select();
     $("#steps_select").val("-1");
     steps_select_clicked();
   });
@@ -162,11 +156,15 @@ function journeys_select_clicked() {
     $("#journeys_button").html("Add");
     $("#journeys_delete_button").attr("disabled", true);
     $("#journey_name").html("None selected");
+    $("#actions_to_show_select").find("option").remove();
+    $("#actions_to_show_area").attr("disabled", true); 
   } else {
     $("#journeys_button").html("Update");
     $("#journeys_delete_button").attr("disabled", false);
     $("#journeys_input").val($("#journeys_select option:selected").text());
     $("#journey_name").html($("#journeys_select option:selected").text());
+    $("#actions_to_show_area").attr("disabled", false);
+    update_actions_to_show_select();
   }
 }
 
@@ -196,6 +194,9 @@ function update_actions_select() {
       for (var i=0; i<stepsArray.length; i++) {
         $("#actions_thing_one_select").append("<option value=" + stepsArray[i].id + ">" + stepsArray[i].name + "</option>");
         $("#actions_thing_two_select").append("<option value=" + stepsArray[i].id + ">" + stepsArray[i].name + "</option>");
+      }
+      if ($("#journeys_select").val() != -1) {
+        update_actions_to_show_select();
       }
       actions_select_clicked();
     });
@@ -230,6 +231,40 @@ function delete_action() {
   actionsId = $("#actions_select").val();
   $.post("php/store.php", { table: "actions", action: "delete", id: actionsId }, function() {
     update_actions_select();
+  });
+}
+
+// Functions to handle actions_to_show_area
+function update_actions_to_show_select() {
+  transactionId = $("#transaction_select").val();
+  $.post("php/store.php", { table: "actions", action: "getByTransactionId", id: transactionId }, function(data, status) {
+    $("#actions_to_show_select").find("option").remove();
+    actionsArray = JSON.parse(data);
+    for (var i=0; i<actionsArray.length; i++) {
+      $("#actions_to_show_select").append("<option value=" + actionsArray[i].id + ">" + actionsArray[i].name + "</option>");
+    }
+
+    journeyId = $("#journeys_select").val();
+    $.post("php/store.php", { table: "journeys", action: "getById", id: journeyId }, function(data, status) {
+      actionsToShowArray = JSON.parse(data);
+      actionsToShow = actionsToShowArray[0].actions_to_show;
+      selectedArray = JSON.parse("[" + actionsToShow + "]");
+      for (var i=0; i<selectedArray.length; i++) {
+        $("#actions_to_show_select option[value='" + selectedArray[i] + "']").prop("selected", true);
+      }
+
+      draw();
+
+    });
+
+  });
+
+}
+
+function actions_to_shot_select_clicked() {
+  journeyId = $("#journeys_select").val();
+  actions = $("#actions_to_show_select").val().toString();
+  $.post("php/store.php", { table: "journeys", action: "update", id: journeyId, actions_to_show: actions }, function(data, status) {
   });
 }
 
@@ -285,7 +320,7 @@ $(function() {
   
   // Handle change in line length slider
   $("#line_length_slider").change(function() {
-    gData.dot = "digraph {node [shape=circle fontSize=16] edge [length=" + $("#line_length_slider").val() + ", color=gray, fontColor=black]" + getNetworkData() + "}";
+    gLineLength = $("#line_length_slider").val();
     draw();
   });
 
@@ -358,7 +393,7 @@ $(function() {
     transactionId = $("#transaction_select").val()[0];
     journeysId = $("#journeys_select").val();
     if (buttonValue == "Add") {
-      $.post("php/store.php", { table: "journeys", action: "add", name: journeysName, transaction_id: transactionId }, function() {
+      $.post("php/store.php", { table: "journeys", action: "add", name: journeysName, transaction_id: transactionId, actions_to_show: "" }, function() {
         update_journeys_select();
       });
     } else {
@@ -398,6 +433,11 @@ $(function() {
 
   $("#actions_delete_button").click(function () {
     delete_item("delete_action");
+  });
+
+  // actions_to_show_area event handling
+  $("#actions_to_show_select").change(function () {
+    actions_to_shot_select_clicked();
   });
 
 });

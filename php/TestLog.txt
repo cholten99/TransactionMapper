@@ -1,27 +1,12 @@
-15/09/14 22:04 > array(3) {
+17/09/14 01:58 > Restarted
+17/09/14 01:58 > array(3) {
   ["table"]=>
-  string(8) "journeys"
+  string(5) "steps"
   ["action"]=>
   string(18) "getByTransactionId"
   ["id"]=>
-  string(1) "6"
+  string(2) "-1"
 }
 
-15/09/14 22:22 > array(3) {
-  ["table"]=>
-  string(8) "journeys"
-  ["action"]=>
-  string(6) "delete"
-  ["id"]=>
-  string(4) "null"
-}
-
-15/09/14 22:22 > array(3) {
-  ["table"]=>
-  string(8) "journeys"
-  ["action"]=>
-  string(18) "getByTransactionId"
-  ["id"]=>
-  string(1) "6"
-}
-
+17/09/14 01:58 > SELECT * FROM steps WHERE transaction_id=-1 ORDER BY name
+17/09/14 01:58 > []

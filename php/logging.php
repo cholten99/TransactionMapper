@@ -1,8 +1,11 @@
 <?php
 
+date_default_timezone_set("Europe/London");
+
 // Clean testing log
 function ClearLog() {
   $fp = fopen('TestLog.txt', 'w');
+  TestLog("Restarted");
   fclose($fp);
 }
 

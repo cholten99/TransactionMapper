@@ -7,10 +7,15 @@
 // table={table name}
 // data={getAll: | get: id=<id> | add:[var=value] | update: [var=value] && id=<id> |  delete: id=<id>}
 
+  // Set for logging
+  $LOGGING = false;
+
   // For logging
-  include "logging.php";
-//  ClearLog();
-//  TestLogArray($_POST);
+  if ($LOGGING == true) {
+    include "logging.php";
+    ClearLog();
+    TestLogArray($_POST);
+  }
 
   $host = getenv("DB1_HOST");
   $user = getenv("DB1_USER");
@@ -29,9 +34,15 @@
   unset($_POST['action']);
   $id = 0;
 
-  if (($action == 'getById') || ($action == 'getByTransactionId') || ($action == 'update') || ($action == 'delete')) {
+  if (($action == 'getById') || ($action == 'getByTransactionId') || ($action == 'update') || ($action == 'delete') || ($action== 'getNetworkString')) {
     $id = $_POST['id'];
     unset($_POST['id']); 
+  }
+
+  if ($action == "getNetworkString") {
+    print "A -> B;B -> C[label=\" things and stuff\"];C -> A;";
+    // Yes, I'm aware this is a hack
+    exit(0);
   }
 
   $sql_string = "";
@@ -62,6 +73,10 @@
     $sql_string = "DELETE FROM " . $table . " WHERE id=" . $id;
   }
 
+  if ($LOGGING == true) {
+    TestLog($sql_string);
+  }
+
   $result = $mysqli->query($sql_string);
 
   if ($action == "add") {
@@ -73,7 +88,13 @@
     while($row = $result->fetch_assoc()) {
       $rows[] = $row;
     }
-    print json_encode($rows);
+    $output = json_encode($rows);
+
+    if ($LOGGING == true) {
+      TestLog($output);
+    }
+    
+    print $output;
   }
 
   $mysqli->close();
