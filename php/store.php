@@ -7,16 +7,11 @@
 // table={table name}
 // data={getAll: | get: id=<id> | add:[var=value] | update: [var=value] && id=<id> |  delete: id=<id>}
 
-  // Set for logging
-  $LOGGING = false;
-
   // For logging
-  if ($LOGGING == true) {
-    include "logging.php";
-    ClearLog();
-    TestLogArray($_POST);
-  }
-
+  include "logging.php";
+  ClearLog();
+  TestLogArray($_POST);
+/*
   $host = getenv("DB1_HOST");
   $user = getenv("DB1_USER");
   $pass = getenv("DB1_PASS");
@@ -40,7 +35,51 @@
   }
 
   if ($action == "getNetworkString") {
-    print "A -> B;B -> C[label=\" things and stuff\"];C -> A;";
+  
+    $sql_string = "SELECT * FROM journeys WHERE id=" + $id;
+
+    TestLog($sql_string);
+
+    $result = $mysqli->query($sql_string);
+    $row = $result->fetch_assoc();
+    $actions_to_show = $row['actions_to_show'];
+    $actions_to_show_array = explode(",", $actions_to_show);
+    
+    $result_string = "";
+    
+    foreach ($actions_to_show_array as $value) {
+      $sql_string = "SELECT * FROM actions WHERE id=" + $value;
+
+      TestLog($sql_string);  
+
+      $result = $mysqli->query($sql_string);
+      $row = $result->fetch_assoc();
+      $action_name = $row['name'];
+      $step_one_id = $row['step_one_id'];
+      $step_two_id = $row['step_two_id'];
+      
+      $sql_string = "SELECT * FROM steps WHERE id=" + $step_one_id;
+
+      TestLog($sql_string);
+
+      $result = $mysqli->query($sql_string);
+      $row = $result->fetch_assoc();
+      $step_one = $row['name'];      
+
+      $sql_string = "SELECT * FROM steps WHERE id=" + $step_two_id;
+      
+      TestLog($sql_string);
+
+      $result = $mysqli->query($sql_string);
+      $row = $result->fetch_assoc();
+      $step_two = $row['name'];      
+
+      $return_string .= $step_one . " -> " . $step_two . "[label=\"" + $action_name + "\"];";
+    }
+        
+    TestLog($return_string);
+  
+    print return_string;
     // Yes, I'm aware this is a hack
     exit(0);
   }
@@ -73,9 +112,7 @@
     $sql_string = "DELETE FROM " . $table . " WHERE id=" . $id;
   }
 
-  if ($LOGGING == true) {
-    TestLog($sql_string);
-  }
+  TestLog($sql_string);
 
   $result = $mysqli->query($sql_string);
 
@@ -90,13 +127,11 @@
     }
     $output = json_encode($rows);
 
-    if ($LOGGING == true) {
-      TestLog($output);
-    }
+    TestLog($output);
     
     print $output;
   }
 
   $mysqli->close();
-
+*/
 ?>

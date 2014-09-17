@@ -1,12 +1,1 @@
-17/09/14 01:58 > Restarted
-17/09/14 01:58 > array(3) {
-  ["table"]=>
-  string(5) "steps"
-  ["action"]=>
-  string(18) "getByTransactionId"
-  ["id"]=>
-  string(2) "-1"
-}
-
-17/09/14 01:58 > SELECT * FROM steps WHERE transaction_id=-1 ORDER BY name
-17/09/14 01:58 > []
+Beggins

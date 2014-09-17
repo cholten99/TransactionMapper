@@ -327,9 +327,6 @@ $(function() {
   // Set up initial state of controls
   update_transaction_select();
 
-  // Initial drawing of network
-  draw();
-  
   // transaction_area event handling
   $("#transaction_select").change(function () {
     transaction_select_clicked();
