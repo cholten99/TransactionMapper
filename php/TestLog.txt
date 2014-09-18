@@ -1,1 +1,17 @@
-Beggins
+18/09/14 02:58 > Restarted
+18/09/14 02:58 > array(3) {
+  ["table"]=>
+  string(8) "journeys"
+  ["action"]=>
+  string(16) "getNetworkString"
+  ["id"]=>
+  string(1) "8"
+}
+
+18/09/14 02:58 > Before!
+18/09/14 02:58 > After!
+18/09/14 02:58 > SELECT * FROM journeys WHERE id=8
+18/09/14 02:58 > SELECT * FROM actions WHERE id=10
+18/09/14 02:58 > SELECT * FROM steps WHERE id=21
+18/09/14 02:58 > SELECT * FROM steps WHERE id=15
+18/09/14 02:58 > really_really_really_stupidly_long_transaction_step_name -> Haddock1[label="Flooble"];

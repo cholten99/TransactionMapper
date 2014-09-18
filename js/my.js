@@ -37,7 +37,7 @@ function draw () {
 
   journeysId = $("#journeys_select").val();
   $.post("php/store.php", { table: "journeys", action: "getNetworkString", id: journeysId }, function(data, status) {
-    gData.dot = "digraph { node [shape=circle fontSize=16] edge [length=" + gLineLength + ", color=gray, fontColor=black] " + data + "}";
+    gData.dot = "digraph { node [shape=box fontSize=16 mass=3] edge [length=" + gLineLength + ", color=gray, fontColor=black] " + data + "}";
 
     try {
       gCanvas = $("#map")[0];
@@ -261,10 +261,11 @@ function update_actions_to_show_select() {
 
 }
 
-function actions_to_shot_select_clicked() {
+function actions_to_show_select_clicked() {
   journeyId = $("#journeys_select").val();
   actions = $("#actions_to_show_select").val().toString();
   $.post("php/store.php", { table: "journeys", action: "update", id: journeyId, actions_to_show: actions }, function(data, status) {
+    draw();
   });
 }
 
@@ -434,7 +435,7 @@ $(function() {
 
   // actions_to_show_area event handling
   $("#actions_to_show_select").change(function () {
-    actions_to_shot_select_clicked();
+    actions_to_show_select_clicked();
   });
 
 });

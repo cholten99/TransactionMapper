@@ -11,7 +11,7 @@
   include "logging.php";
   ClearLog();
   TestLogArray($_POST);
-/*
+
   $host = getenv("DB1_HOST");
   $user = getenv("DB1_USER");
   $pass = getenv("DB1_PASS");
@@ -29,14 +29,18 @@
   unset($_POST['action']);
   $id = 0;
 
-  if (($action == 'getById') || ($action == 'getByTransactionId') || ($action == 'update') || ($action == 'delete') || ($action== 'getNetworkString')) {
+  if (($action == 'getById') || ($action == 'getByTransactionId') || ($action == 'update') || ($action == 'delete') || ($action == 'getNetworkString')) {
     $id = $_POST['id'];
     unset($_POST['id']); 
   }
 
+  TestLog("Before!");
+
   if ($action == "getNetworkString") {
   
-    $sql_string = "SELECT * FROM journeys WHERE id=" + $id;
+    TestLog("After!");
+
+    $sql_string = "SELECT * FROM journeys WHERE id=" . $id;
 
     TestLog($sql_string);
 
@@ -48,7 +52,7 @@
     $result_string = "";
     
     foreach ($actions_to_show_array as $value) {
-      $sql_string = "SELECT * FROM actions WHERE id=" + $value;
+      $sql_string = "SELECT * FROM actions WHERE id=" . $value;
 
       TestLog($sql_string);  
 
@@ -58,7 +62,7 @@
       $step_one_id = $row['step_one_id'];
       $step_two_id = $row['step_two_id'];
       
-      $sql_string = "SELECT * FROM steps WHERE id=" + $step_one_id;
+      $sql_string = "SELECT * FROM steps WHERE id=" . $step_one_id;
 
       TestLog($sql_string);
 
@@ -66,7 +70,7 @@
       $row = $result->fetch_assoc();
       $step_one = $row['name'];      
 
-      $sql_string = "SELECT * FROM steps WHERE id=" + $step_two_id;
+      $sql_string = "SELECT * FROM steps WHERE id=" . $step_two_id;
       
       TestLog($sql_string);
 
@@ -74,12 +78,12 @@
       $row = $result->fetch_assoc();
       $step_two = $row['name'];      
 
-      $return_string .= $step_one . " -> " . $step_two . "[label=\"" + $action_name + "\"];";
+      $return_string .= $step_one . " -> " . $step_two . "[label=\"" . $action_name . "\"];";
     }
         
     TestLog($return_string);
   
-    print return_string;
+    print $return_string;
     // Yes, I'm aware this is a hack
     exit(0);
   }
@@ -133,5 +137,5 @@
   }
 
   $mysqli->close();
-*/
+
 ?>
