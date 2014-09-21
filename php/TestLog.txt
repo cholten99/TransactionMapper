@@ -1,5 +1,5 @@
-19/09/14 01:13 > Restarted
-19/09/14 01:13 > array(3) {
+21/09/14 03:15 > Restarted
+21/09/14 03:15 > array(3) {
   ["table"]=>
   string(8) "journeys"
   ["action"]=>
@@ -8,22 +8,25 @@
   string(1) "6"
 }
 
-19/09/14 01:13 > Before!
-19/09/14 01:13 > After!
-19/09/14 01:13 > SELECT * FROM journeys WHERE id=6
-19/09/14 01:13 > SELECT * FROM actions WHERE id=9
-19/09/14 01:13 > SELECT * FROM steps WHERE id=20
-19/09/14 01:13 > SELECT * FROM steps WHERE id=19
-19/09/14 01:13 > SELECT * FROM actions WHERE id=6
-19/09/14 01:13 > SELECT * FROM steps WHERE id=15
-19/09/14 01:13 > SELECT * FROM steps WHERE id=18
-19/09/14 01:13 > SELECT * FROM actions WHERE id=7
-19/09/14 01:13 > SELECT * FROM steps WHERE id=18
-19/09/14 01:13 > SELECT * FROM steps WHERE id=15
-19/09/14 01:13 > SELECT * FROM actions WHERE id=5
-19/09/14 01:13 > SELECT * FROM steps WHERE id=18
-19/09/14 01:13 > SELECT * FROM steps WHERE id=18
-19/09/14 01:13 > SELECT * FROM actions WHERE id=8
-19/09/14 01:13 > SELECT * FROM steps WHERE id=19
-19/09/14 01:13 > SELECT * FROM steps WHERE id=15
-19/09/14 01:13 > "Stupidly long step name" -> "Flibble"[label="Bongo"];"Haddock1" -> "Bass"[label="Brown"];"Bass" -> "Haddock1"[label="Crumpet"];"Bass" -> "Bass"[label="Grizzly"];"Flibble" -> "Haddock1"[label="Slurph"];
+21/09/14 03:15 > Before!
+21/09/14 03:15 > After!
+21/09/14 03:15 > SELECT * FROM journeys WHERE id=6
+21/09/14 03:15 > SELECT * FROM actions WHERE id=9
+21/09/14 03:15 > SELECT * FROM steps WHERE id=20
+21/09/14 03:15 > SELECT * FROM steps WHERE id=15
+21/09/14 03:15 > SELECT * FROM actions WHERE id=6
+21/09/14 03:15 > SELECT * FROM steps WHERE id=15
+21/09/14 03:15 > SELECT * FROM steps WHERE id=18
+21/09/14 03:15 > SELECT * FROM actions WHERE id=7
+21/09/14 03:15 > SELECT * FROM steps WHERE id=18
+21/09/14 03:15 > SELECT * FROM steps WHERE id=15
+21/09/14 03:15 > SELECT * FROM actions WHERE id=10
+21/09/14 03:15 > SELECT * FROM steps WHERE id=21
+21/09/14 03:15 > SELECT * FROM steps WHERE id=15
+21/09/14 03:15 > SELECT * FROM actions WHERE id=5
+21/09/14 03:15 > SELECT * FROM steps WHERE id=18
+21/09/14 03:15 > SELECT * FROM steps WHERE id=18
+21/09/14 03:15 > SELECT * FROM actions WHERE id=8
+21/09/14 03:15 > SELECT * FROM steps WHERE id=19
+21/09/14 03:15 > SELECT * FROM steps WHERE id=15
+21/09/14 03:15 > "Stupidly long step name" -> "Haddock1"[label="Bongo"];"Haddock1" -> "Bass"[label="Brown"];"Bass" -> "Haddock1"[label="Crumpet"];"really_really_really_stupidly_long_transaction_step_name" -> "Haddock1"[label="Flooble"];"Bass" -> "Bass"[label="Grizzly"];"Flibble" -> "Haddock1"[label="Slurph"];

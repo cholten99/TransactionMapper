@@ -34,16 +34,8 @@
     unset($_POST['id']); 
   }
 
-  TestLog("Before!");
-
   if ($action == "getNetworkString") {
-  
-    TestLog("After!");
-
     $sql_string = "SELECT * FROM journeys WHERE id=" . $id;
-
-    TestLog($sql_string);
-
     $result = $mysqli->query($sql_string);
     $row = $result->fetch_assoc();
     $actions_to_show = $row['actions_to_show'];
@@ -53,27 +45,18 @@
     
     foreach ($actions_to_show_array as $value) {
       $sql_string = "SELECT * FROM actions WHERE id=" . $value;
-
-      TestLog($sql_string);  
-
       $result = $mysqli->query($sql_string);
       $row = $result->fetch_assoc();
       $action_name = $row['name'];
       $step_one_id = $row['step_one_id'];
-      $step_two_id = $row['step_two_id'];
-      
+      $step_two_id = $row['step_two_id'];      
+
       $sql_string = "SELECT * FROM steps WHERE id=" . $step_one_id;
-
-      TestLog($sql_string);
-
       $result = $mysqli->query($sql_string);
       $row = $result->fetch_assoc();
       $step_one = "\"" . $row['name'] . "\"";
 
       $sql_string = "SELECT * FROM steps WHERE id=" . $step_two_id;
-      
-      TestLog($sql_string);
-
       $result = $mysqli->query($sql_string);
       $row = $result->fetch_assoc();
       $step_two = "\"" . $row['name'] . "\"";

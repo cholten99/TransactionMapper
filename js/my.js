@@ -3,7 +3,7 @@ var gNetwork;
 var gCanvas;
 var gOptions = {
   height:"400px",
-  configurePhysics:true
+//  configurePhysics:true
 };
 var gPrinting = false;
 var gShowStepNames = true;
@@ -33,7 +33,7 @@ function delete_item(functionName) {
 
 // Resize the map when window resizes
 window.onresize = function () {
-  gNetwork.redraw()
+  draw();
 };
 
 // Draw the map
@@ -42,36 +42,58 @@ function draw () {
   journeysId = $("#journeys_select").val();
   $.post("php/store.php", { table: "journeys", action: "getNetworkString", id: journeysId }, function(data, status) {
 
-console.log(data);
-
-    var stepsObject = {};
-    stepsObject.keys = [];
-    stepsObject.values = [];
-    var asciiOrd = 65;
-    var start = 0;
-    var end = data.indexOf(" -");
-    while (end != -1) {
-console.log("Start: " + start + " End: " + end + " Data: " + data.substring(start, end));
-      step_one = data.substring(start, end);
-      if (stepsObject.keys.indexOf(step_one) == -1) {
-        stepsArray.keys[] = step_one;
-        stepsArray.values[] = String.fromCharCode(asciiOrd);
-        asciiOrd++;
-      }
-      start = data.indexOf("> ", end) + 2;
-      end = data.indexOf("[", start);
-      step_two = data.substring(start, end);
-      if (stepsObject.keys.indexOf(step_two) == -1) {
-        stepsArray.keys[] = step_two;
-        stepsArray.values[] = String.fromCharCode(asciiOrd);
-        asciiOrd++;
-      }
-console.log("Start: " + start + " End: " + end + " Data: " + data.substring(start, end));
-      start = data.indexOf(";", end) + 1;
-      end = data.indexOf(" ->", start);
-    }
-
     gData.dot = "digraph { node [shape=box fontSize=16 mass=3] edge [length=" + gLineLength + ", color=gray, fontColor=black] " + data + "}";
+
+    if (gShowStepNames == false) {
+      var stepsObject = {};
+      stepsObject.keys = [];
+      stepsObject.values = [];
+      var asciiOrd = 65;
+      var start = 0;
+      var end = data.indexOf(" -");
+      while (end != -1) {
+        step_one = data.substring(start, end);
+        if (stepsObject.keys.indexOf(step_one) == -1) {
+          stepsObject.keys.push(step_one);
+          stepsObject.values.push(String.fromCharCode(asciiOrd));
+          asciiOrd++;
+        }
+        start = data.indexOf("> ", end) + 2;
+        end = data.indexOf("[", start);
+        step_two = data.substring(start, end);
+        if (stepsObject.keys.indexOf(step_two) == -1) {
+          stepsObject.keys.push(step_two);
+          stepsObject.values.push(String.fromCharCode(asciiOrd));
+          asciiOrd++;
+        }
+        start = data.indexOf(";", end) + 1;
+        end = data.indexOf(" ->", start);
+      }
+
+      for (i=0; i< stepsObject.keys.length; i++) {
+        regEx = new RegExp(stepsObject.keys[i], "g");
+        gData.dot = gData.dot.replace(regEx, stepsObject.values[i]);
+      }
+
+      $("#table_area").css("visibility", "visible");
+      $("#table_area").css("height", $("#canvas_height_slider").val() + "px");
+      $("#table_area").css("width", "30%");
+      $("#map_area").css("margin-left", "30%");
+      $("#map_area").css("border-left-style", "solid");
+
+      $("#symbol_table").empty();
+      $('#symbol_table').append("<tr><th>Symbol</th><th>Replaces</th></tr>");
+      for (i=0; i< stepsObject.keys.length; i++) {
+        step = stepsObject.keys[i].substring(1, stepsObject.keys[i].length-1);
+        $('#symbol_table').append("<tr><td>" + step + "</td><td>" + stepsObject.values[i] + "</td></tr>");
+      }
+
+    } else {
+      $("#table_area").css("visibility", "hidden");
+      $("#table_area").css("height", "0px");
+      $("#map_area").css("margin-left", "0px");
+      $("#map_area").css("border-left-style", "none");
+    }
 
     try {
       gCanvas = $("#map")[0];

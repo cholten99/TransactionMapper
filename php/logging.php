@@ -1,6 +1,6 @@
 <?php
 
-$GLOBALS['logging'] = "true";
+$GLOBALS['logging'] = "false";
 
 date_default_timezone_set("Europe/London");
 

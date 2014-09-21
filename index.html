@@ -101,20 +101,26 @@
 
   <hr/>
 
-  <div id="map_area">
+  <div id="mapAndTableContainer">
     <h3>Transaction: <span id="transaction_name">None selected</span> | 
     User journey: <span id="journey_name">None selected</span></h3>
     <hr/>
-
-    <div id="map"></div>
-
-    <!-- Hidden element for printing PNG -->
-    <div id="print_area"></div>
+    <div id="table_area">
+      <table id="symbol_table"></table>
+    </div>
+    <div id="map_area">
+      <div id="map"></div>
+    </div>
 
   </div>
   
+  <div id="footer">
   <hr/>
-    Thanks to the folks behind <a href="http://visjs.org/">vis.js</a>, <a href="http://html2canvas.hertzen.com/">html2canvas</a>, <a href="http://www.nihilogic.dk/labs/canvas2image/">canvase2image</a> and <a href="http://projects.erikzaadi.com/jQueryPlugins/jQuery.printElement/">jQuery Print Element</a><p/>
- 
+    Thanks to the folks behind <a href="http://visjs.org/">vis.js</a>, <a href="http://html2canvas.hertzen.com/">html2canvas</a>, <a href="http://www.nihilogic.dk/labs/canvas2image/">canvase2image</a> and <a href="http://projects.erikzaadi.com/jQueryPlugins/jQuery.printElement/">jQuery Print Element</a>
+  </div>
+
+  <!-- Hidden element for printing PNG -->
+  <div id="print_area"></div>
+
 </body>
 </html>
