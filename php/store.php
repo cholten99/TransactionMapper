@@ -68,7 +68,7 @@
 
       $result = $mysqli->query($sql_string);
       $row = $result->fetch_assoc();
-      $step_one = $row['name'];      
+      $step_one = "\"" . $row['name'] . "\"";
 
       $sql_string = "SELECT * FROM steps WHERE id=" . $step_two_id;
       
@@ -76,7 +76,7 @@
 
       $result = $mysqli->query($sql_string);
       $row = $result->fetch_assoc();
-      $step_two = $row['name'];      
+      $step_two = "\"" . $row['name'] . "\"";
 
       $return_string .= $step_one . " -> " . $step_two . "[label=\"" . $action_name . "\"];";
     }

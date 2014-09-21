@@ -1,8 +1,12 @@
 // Global variables
 var gNetwork;
 var gCanvas;
-var gOptions = { height:"400px" };
+var gOptions = {
+  height:"400px",
+  configurePhysics:true
+};
 var gPrinting = false;
+var gShowStepNames = true;
 var gShowControls = true;
 var gLineLength = 100;
 var gData = {};
@@ -37,6 +41,36 @@ function draw () {
 
   journeysId = $("#journeys_select").val();
   $.post("php/store.php", { table: "journeys", action: "getNetworkString", id: journeysId }, function(data, status) {
+
+console.log(data);
+
+    var stepsObject = {};
+    stepsObject.keys = [];
+    stepsObject.values = [];
+    var asciiOrd = 65;
+    var start = 0;
+    var end = data.indexOf(" -");
+    while (end != -1) {
+console.log("Start: " + start + " End: " + end + " Data: " + data.substring(start, end));
+      step_one = data.substring(start, end);
+      if (stepsObject.keys.indexOf(step_one) == -1) {
+        stepsArray.keys[] = step_one;
+        stepsArray.values[] = String.fromCharCode(asciiOrd);
+        asciiOrd++;
+      }
+      start = data.indexOf("> ", end) + 2;
+      end = data.indexOf("[", start);
+      step_two = data.substring(start, end);
+      if (stepsObject.keys.indexOf(step_two) == -1) {
+        stepsArray.keys[] = step_two;
+        stepsArray.values[] = String.fromCharCode(asciiOrd);
+        asciiOrd++;
+      }
+console.log("Start: " + start + " End: " + end + " Data: " + data.substring(start, end));
+      start = data.indexOf(";", end) + 1;
+      end = data.indexOf(" ->", start);
+    }
+
     gData.dot = "digraph { node [shape=box fontSize=16 mass=3] edge [length=" + gLineLength + ", color=gray, fontColor=black] " + data + "}";
 
     try {
@@ -310,6 +344,16 @@ $(function() {
       $("#print_area").html("");
       gPrinting = false;
     }
+  });
+
+  // Toggle showing full step names button
+  $("#toggle_button").click(function() {
+    if (gShowStepNames) {
+      gShowStepNames = false;
+    } else {
+      gShowStepNames = true;
+    }
+    draw();
   });
 
   // Handle change in canvas height slider
