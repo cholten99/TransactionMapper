@@ -44,9 +44,9 @@
   <hr/>
 
   | <button id="toggle_controls_button">Click to toggle controls</button> | <button id="download_button">Click to download map as PNG</button> | 
-  <button id="print_button">Click to print map</button> | <button id="toggle_button">Click to toggle steps display</button> |
-  Height of canvas: <input id="canvas_height_slider" type="range" min="400" max="800" step="100" value="400"/> | 
-  Length of lines: <input id="line_length_slider" type="range" min="100" max="400" step="100" value="100"/> |
+  <button id="print_button">Click to print map</button> | <button id="toggle_button">Click to toggle pages display</button> |
+  Height of canvas: <input id="canvas_height_slider" type="range" min="400" max="800" page="100" value="400"/> | 
+  Length of lines: <input id="line_length_slider" type="range" min="100" max="400" page="100" value="100"/> |
   <hr/>
 
   <div id="crud_wrapper">
@@ -60,13 +60,13 @@
       <button id="transaction_delete_button">Delete</button>
     </div>
   
-    <div id="steps_area">
-      <b>Steps for transaction</b>
-      <select id="steps_select" size="8" style="width:95%;">
+    <div id="pages_area">
+      <b>Pages for transaction</b>
+      <select id="pages_select" size="8" style="width:95%;">
       </select><p/>
-      <input id="steps_input" style="width:42%;"></input>
-      <button id="steps_button">Add</button>
-      <button id="steps_delete_button">Delete</button>
+      <input id="pages_input" style="width:42%;"></input>
+      <button id="pages_button">Add</button>
+      <button id="pages_delete_button">Delete</button>
     </div>
   
     <div id="actions_area">

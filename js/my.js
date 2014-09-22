@@ -6,7 +6,7 @@ var gOptions = {
 //  configurePhysics:true
 };
 var gPrinting = false;
-var gShowStepNames = true;
+var gShowPageNames = true;
 var gShowControls = true;
 var gLineLength = 100;
 var gData = {};
@@ -44,35 +44,35 @@ function draw () {
 
     gData.dot = "digraph { node [shape=box fontSize=16 mass=3] edge [length=" + gLineLength + ", color=gray, fontColor=black] " + data + "}";
 
-    if (gShowStepNames == false) {
-      var stepsObject = {};
-      stepsObject.keys = [];
-      stepsObject.values = [];
+    if (gShowPageNames == false) {
+      var pagesObject = {};
+      pagesObject.keys = [];
+      pagesObject.values = [];
       var asciiOrd = 65;
       var start = 0;
       var end = data.indexOf(" -");
       while (end != -1) {
-        step_one = data.substring(start, end);
-        if (stepsObject.keys.indexOf(step_one) == -1) {
-          stepsObject.keys.push(step_one);
-          stepsObject.values.push(String.fromCharCode(asciiOrd));
+        page_one = data.substring(start, end);
+        if (pagesObject.keys.indexOf(page_one) == -1) {
+          pagesObject.keys.push(page_one);
+          pagesObject.values.push(String.fromCharCode(asciiOrd));
           asciiOrd++;
         }
         start = data.indexOf("> ", end) + 2;
         end = data.indexOf("[", start);
-        step_two = data.substring(start, end);
-        if (stepsObject.keys.indexOf(step_two) == -1) {
-          stepsObject.keys.push(step_two);
-          stepsObject.values.push(String.fromCharCode(asciiOrd));
+        page_two = data.substring(start, end);
+        if (pagesObject.keys.indexOf(page_two) == -1) {
+          pagesObject.keys.push(page_two);
+          pagesObject.values.push(String.fromCharCode(asciiOrd));
           asciiOrd++;
         }
         start = data.indexOf(";", end) + 1;
         end = data.indexOf(" ->", start);
       }
 
-      for (i=0; i< stepsObject.keys.length; i++) {
-        regEx = new RegExp(stepsObject.keys[i], "g");
-        gData.dot = gData.dot.replace(regEx, stepsObject.values[i]);
+      for (i=0; i< pagesObject.keys.length; i++) {
+        regEx = new RegExp(pagesObject.keys[i], "g");
+        gData.dot = gData.dot.replace(regEx, pagesObject.values[i]);
       }
 
       $("#table_area").css("visibility", "visible");
@@ -83,9 +83,9 @@ function draw () {
 
       $("#symbol_table").empty();
       $('#symbol_table').append("<tr><th>Symbol</th><th>Replaces</th></tr>");
-      for (i=0; i< stepsObject.keys.length; i++) {
-        step = stepsObject.keys[i].substring(1, stepsObject.keys[i].length-1);
-        $('#symbol_table').append("<tr><td>" + step + "</td><td>" + stepsObject.values[i] + "</td></tr>");
+      for (i=0; i< pagesObject.keys.length; i++) {
+        page = pagesObject.keys[i].substring(1, pagesObject.keys[i].length-1);
+        $('#symbol_table').append("<tr><td>" + page + "</td><td>" + pagesObject.values[i] + "</td></tr>");
       }
 
     } else {
@@ -128,8 +128,8 @@ function transaction_select_clicked() {
     $("#transaction_name").html("None selected");
     $("#transaction_button").html("Add");
     $("#transaction_delete_button").attr("disabled", true);
-    $('#steps_area :input').attr("disabled", true);
-    update_steps_select();
+    $('#pages_area :input').attr("disabled", true);
+    update_pages_select();
     $('#journeys_area :input').attr("disabled", true);
     update_journeys_select();
     $('#actions_area :input').attr("disabled", true);
@@ -140,8 +140,8 @@ function transaction_select_clicked() {
     $("#transaction_delete_button").attr("disabled", false);
     $("#transaction_input").val($("#transaction_select option:selected").text());
     $("#transaction_name").html($("#transaction_select option:selected").text());
-    $("#steps_area :input").attr("disabled", false);
-    update_steps_select();
+    $("#pages_area :input").attr("disabled", false);
+    update_pages_select();
     $("#journeys_area :input").attr("disabled", false);
     update_journeys_select();
     $('#actions_area :input').attr("disabled", false);
@@ -156,38 +156,38 @@ function delete_transaction() {
   });
 }
 
-// Functions to handle steps_area
-function update_steps_select() {
+// Functions to handle pages_area
+function update_pages_select() {
   transactionId = $("#transaction_select").val();
-  $.post("php/store.php", { table: "steps", action: "getByTransactionId", id: transactionId }, function(data, status) {
-    $("#steps_select").find("option").remove();
-    $("#steps_select").append("<option value='-1'>-> New <-</option>");
-    stepsArray = JSON.parse(data);
-    for (var i=0; i<stepsArray.length; i++) {
-      $("#steps_select").append("<option value=" + stepsArray[i].id + ">" + stepsArray[i].name + "</option>");
+  $.post("php/store.php", { table: "pages", action: "getByTransactionId", id: transactionId }, function(data, status) {
+    $("#pages_select").find("option").remove();
+    $("#pages_select").append("<option value='-1'>-> New <-</option>");
+    pagesArray = JSON.parse(data);
+    for (var i=0; i<pagesArray.length; i++) {
+      $("#pages_select").append("<option value=" + pagesArray[i].id + ">" + pagesArray[i].name + "</option>");
     }
     update_actions_select();
-    $("#steps_select").val("-1");
-    steps_select_clicked();
+    $("#pages_select").val("-1");
+    pages_select_clicked();
   });
 }
 
-function steps_select_clicked() {
-  if ($("#steps_select").val() == -1) {
-    $("#steps_input").val("");
-    $("#steps_button").html("Add");
-    $("#steps_delete_button").attr("disabled", true);
+function pages_select_clicked() {
+  if ($("#pages_select").val() == -1) {
+    $("#pages_input").val("");
+    $("#pages_button").html("Add");
+    $("#pages_delete_button").attr("disabled", true);
   } else {
-    $("#steps_button").html("Update");
-    $("#steps_delete_button").attr("disabled", false);
-    $("#steps_input").val($("#steps_select option:selected").text());
+    $("#pages_button").html("Update");
+    $("#pages_delete_button").attr("disabled", false);
+    $("#pages_input").val($("#pages_select option:selected").text());
   }
 }
 
-function delete_step() {
-  stepsId = $("#steps_select").val();
-  $.post("php/store.php", { table: "steps", action: "delete", id: stepsId }, function() {
-    update_steps_select();
+function delete_page() {
+  pagesId = $("#pages_select").val();
+  $.post("php/store.php", { table: "pages", action: "delete", id: pagesId }, function() {
+    update_pages_select();
   });
 }
 
@@ -243,13 +243,13 @@ function update_actions_select() {
     }
     $("#actions_select").val("-1");
 
-    $.post("php/store.php", { table: "steps", action: "getByTransactionId", id: transactionId }, function(data, status) {
+    $.post("php/store.php", { table: "pages", action: "getByTransactionId", id: transactionId }, function(data, status) {
       $("#actions_thing_one_select").find("option").remove();
       $("#actions_thing_two_select").find("option").remove();
-      stepsArray = JSON.parse(data);
-      for (var i=0; i<stepsArray.length; i++) {
-        $("#actions_thing_one_select").append("<option value=" + stepsArray[i].id + ">" + stepsArray[i].name + "</option>");
-        $("#actions_thing_two_select").append("<option value=" + stepsArray[i].id + ">" + stepsArray[i].name + "</option>");
+      pagesArray = JSON.parse(data);
+      for (var i=0; i<pagesArray.length; i++) {
+        $("#actions_thing_one_select").append("<option value=" + pagesArray[i].id + ">" + pagesArray[i].name + "</option>");
+        $("#actions_thing_two_select").append("<option value=" + pagesArray[i].id + ">" + pagesArray[i].name + "</option>");
       }
       if ($("#journeys_select").val() != -1) {
         update_actions_to_show_select();
@@ -274,11 +274,11 @@ function actions_select_clicked() {
     $("#actions_input").val($("#actions_select option:selected").text());
     actionsId = $("#actions_select").val();
     $.post("php/store.php", { table: "actions", action: "getById", id: actionsId }, function(data, status) {
-      stepsArray = JSON.parse(data);
-      step_one_id = stepsArray[0].step_one_id;
-      step_two_id = stepsArray[0].step_two_id;
-      $("#actions_thing_one_select").val(step_one_id);
-      $("#actions_thing_two_select").val(step_two_id);
+      pagesArray = JSON.parse(data);
+      page_one_id = pagesArray[0].page_one_id;
+      page_two_id = pagesArray[0].page_two_id;
+      $("#actions_thing_one_select").val(page_one_id);
+      $("#actions_thing_two_select").val(page_two_id);
     });
   }
 }
@@ -368,12 +368,12 @@ $(function() {
     }
   });
 
-  // Toggle showing full step names button
+  // Toggle showing full page names button
   $("#toggle_button").click(function() {
-    if (gShowStepNames) {
-      gShowStepNames = false;
+    if (gShowPageNames) {
+      gShowPageNames = false;
     } else {
-      gShowStepNames = true;
+      gShowPageNames = true;
     }
     draw();
   });
@@ -419,30 +419,30 @@ $(function() {
     delete_item("delete_transaction");
   });
 
-  // steps_area event handling
-  $("#steps_select").change(function () {
-    steps_select_clicked();
+  // pages_area event handling
+  $("#pages_select").change(function () {
+    pages_select_clicked();
   });
 
-  $("#steps_button").click(function () {;
-    buttonValue = $("#steps_button").html();
-    stepsName = $("#steps_input").val();
-    if (stepsName == "") { return; }
+  $("#pages_button").click(function () {;
+    buttonValue = $("#pages_button").html();
+    pagesName = $("#pages_input").val();
+    if (pagesName == "") { return; }
     transactionId = $("#transaction_select").val()[0];
-    stepsId = $("#steps_select").val();
+    pagesId = $("#pages_select").val();
     if (buttonValue == "Add") {
-      $.post("php/store.php", { table: "steps", action: "add", name: stepsName, transaction_id: transactionId }, function() {
-        update_steps_select();
+      $.post("php/store.php", { table: "pages", action: "add", name: pagesName, transaction_id: transactionId }, function() {
+        update_pages_select();
       });
     } else {
-      $.post("php/store.php", { table: "steps", action: "update", id: stepsId, name: stepsName }, function() {
-        update_steps_select();
+      $.post("php/store.php", { table: "pages", action: "update", id: pagesId, name: pagesName }, function() {
+        update_pages_select();
       });
     }
   });
 
-  $("#steps_delete_button").click(function () {
-    delete_item("delete_step");
+  $("#pages_delete_button").click(function () {
+    delete_item("delete_page");
   });
 
   // journeys_area event handling
@@ -482,14 +482,14 @@ $(function() {
     if (actionsName == "") { return; }
     transactionId = $("#transaction_select").val()[0];
     actionsId = $("#actions_select").val();
-    stepOneId = $("#actions_thing_one_select").val();
-    stepTwoId = $("#actions_thing_two_select").val();
+    pageOneId = $("#actions_thing_one_select").val();
+    pageTwoId = $("#actions_thing_two_select").val();
     if (buttonValue == "Add") {
-      $.post("php/store.php", { table: "actions", action: "add", name: actionsName, transaction_id: transactionId, step_one_id: stepOneId, step_two_id: stepTwoId }, function() {
+      $.post("php/store.php", { table: "actions", action: "add", name: actionsName, transaction_id: transactionId, page_one_id: pageOneId, page_two_id: pageTwoId }, function() {
         update_actions_select();
       });
     } else {
-      $.post("php/store.php", { table: "actions", action: "update", id: actionsId, name: actionsName, step_one_id: stepOneId, step_two_id: stepTwoId }, function() {
+      $.post("php/store.php", { table: "actions", action: "update", id: actionsId, name: actionsName, page_one_id: pageOneId, page_two_id: pageTwoId }, function() {
         update_actions_select();
       });
     }

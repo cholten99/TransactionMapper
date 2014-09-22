@@ -48,20 +48,20 @@
       $result = $mysqli->query($sql_string);
       $row = $result->fetch_assoc();
       $action_name = $row['name'];
-      $step_one_id = $row['step_one_id'];
-      $step_two_id = $row['step_two_id'];      
+      $page_one_id = $row['page_one_id'];
+      $page_two_id = $row['page_two_id'];      
 
-      $sql_string = "SELECT * FROM steps WHERE id=" . $step_one_id;
+      $sql_string = "SELECT * FROM pages WHERE id=" . $page_one_id;
       $result = $mysqli->query($sql_string);
       $row = $result->fetch_assoc();
-      $step_one = "\"" . $row['name'] . "\"";
+      $page_one = "\"" . $row['name'] . "\"";
 
-      $sql_string = "SELECT * FROM steps WHERE id=" . $step_two_id;
+      $sql_string = "SELECT * FROM pages WHERE id=" . $page_two_id;
       $result = $mysqli->query($sql_string);
       $row = $result->fetch_assoc();
-      $step_two = "\"" . $row['name'] . "\"";
+      $page_two = "\"" . $row['name'] . "\"";
 
-      $return_string .= $step_one . " -> " . $step_two . "[label=\"" . $action_name . "\"];";
+      $return_string .= $page_one . " -> " . $page_two . "[label=\"" . $action_name . "\"];";
     }
         
     TestLog($return_string);
